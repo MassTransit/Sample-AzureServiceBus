@@ -2,6 +2,7 @@ namespace Sample.Api
 {
     using System.Linq;
     using System.Threading.Tasks;
+    using Contracts;
     using MassTransit;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -58,6 +59,8 @@ namespace Sample.Api
                 x.UsingAzureServiceBus((_, cfg) =>
                 {
                     cfg.Host(Configuration.GetConnectionString("AzureServiceBus"));
+
+                    cfg.Send<OrderShipped>(s => s.UseSessionIdFormatter(c => c.Message.OrderId.ToString("D")));
                 });
             });
             services.AddMassTransitHostedService();
