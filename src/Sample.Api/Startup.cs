@@ -63,9 +63,6 @@ namespace Sample.Api
                     cfg.Send<OrderShipped>(s => s.UseSessionIdFormatter(c => c.Message.OrderId.ToString("D")));
                 });
             });
-            services.AddMassTransitHostedService();
-
-            services.AddGenericRequestClient();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -89,7 +86,7 @@ namespace Sample.Api
                 Predicate = check => check.Tags.Contains("ready"),
                 ResponseWriter = HealthCheckResponseWriter
             });
-            app.UseHealthChecks("/health/live", new HealthCheckOptions {ResponseWriter = HealthCheckResponseWriter});
+            app.UseHealthChecks("/health/live", new HealthCheckOptions { ResponseWriter = HealthCheckResponseWriter });
 
 
             app.UseEndpoints(endpoints =>

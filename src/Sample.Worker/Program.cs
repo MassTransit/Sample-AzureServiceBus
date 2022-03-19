@@ -51,8 +51,6 @@ namespace Sample.Worker
                             cfg.ConfigureEndpoints(context);
                         });
                     });
-
-                    services.AddMassTransitHostedService(true);
                 });
         }
     }

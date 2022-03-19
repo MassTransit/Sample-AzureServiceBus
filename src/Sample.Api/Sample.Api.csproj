@@ -5,8 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MassTransit.AspNetCore" Version="7.1.8" />
-    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="7.1.8" />
+    <PackageReference Include="MassTransit.Azure.ServiceBus.Core" Version="8.0.0" />
     <PackageReference Include="NSwag.AspNetCore" Version="13.11.1" />
   </ItemGroup>
 

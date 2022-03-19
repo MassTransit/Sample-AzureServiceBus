@@ -1,8 +1,8 @@
 namespace Sample.Worker.StateMachines
 {
     using System;
-    using Automatonymous;
     using Contracts;
+    using MassTransit;
     using Microsoft.Extensions.Logging;
 
 
@@ -28,31 +28,32 @@ namespace Sample.Worker.StateMachines
 
             Initially(
                 When(OrderSubmitted)
-                    .Then(context => logger.LogInformation("Monitoring Order Shipment: {OrderId}", context.Instance.CorrelationId))
-                    .Schedule(MonitorTimeout, context => new MonitorOrderShipmentTimeout {OrderId = context.Instance.CorrelationId})
+                    .Then(context => logger.LogInformation("Monitoring Order Shipment: {OrderId}", context.Saga.CorrelationId))
+                    .Schedule(MonitorTimeout, context => new MonitorOrderShipmentTimeout { OrderId = context.Saga.CorrelationId })
                     .TransitionTo(WaitingForShipment)
             );
 
             During(Initial, WaitingForShipment,
                 When(MonitorTimeout.Received)
-                    .Then(context => logger.LogInformation("Shipment Overdue: {OrderId}", context.Instance.CorrelationId))
+                    .Then(context => logger.LogInformation("Shipment Overdue: {OrderId}", context.Saga.CorrelationId))
                     .TransitionTo(ShipmentOverdue),
                 When(OrderShipped)
-                    .Then(context => logger.LogInformation("Shipment Completed: {OrderId}", context.Instance.CorrelationId))
+                    .Then(context => logger.LogInformation("Shipment Completed: {OrderId}", context.Saga.CorrelationId))
+                    .Unschedule(MonitorTimeout)
                     .TransitionTo(ShipmentComplete)
             );
 
             During(ShipmentOverdue,
                 Ignore(MonitorTimeout.Received),
                 When(OrderShipped)
-                    .Then(context => logger.LogInformation("Shipment Completed (overdue): {OrderId}", context.Instance.CorrelationId))
+                    .Then(context => logger.LogInformation("Shipment Completed (overdue): {OrderId}", context.Saga.CorrelationId))
                     .TransitionTo(ShipmentComplete)
             );
 
             During(ShipmentComplete,
                 Ignore(MonitorTimeout.Received),
                 When(OrderSubmitted)
-                    .Then(context => logger.LogInformation("Order Shipment (already shipped): {OrderId}", context.Instance.CorrelationId))
+                    .Then(context => logger.LogInformation("Order Shipment (already shipped): {OrderId}", context.Saga.CorrelationId))
             );
         }
 
