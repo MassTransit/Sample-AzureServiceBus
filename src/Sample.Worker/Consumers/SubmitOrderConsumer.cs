@@ -5,6 +5,16 @@ namespace Sample.Worker.Consumers
     using MassTransit;
     using Microsoft.Extensions.Logging;
 
+    public class FooConsumer : IConsumer<Foo>
+    {
+        public async Task Consume(ConsumeContext<Foo> context)
+        {
+            await context.RespondAsync<FooResponse>(new
+            {
+                context.Message.OrderId
+            });
+        }
+    }
 
     public class SubmitOrderConsumer :
         IConsumer<SubmitOrder>

@@ -29,6 +29,7 @@ namespace Sample.Worker
 
                         x.AddConsumer<SubmitOrderConsumer>();
                         x.AddConsumer<OrderSubmittedConsumer>();
+                        x.AddConsumer<FooConsumer>();
 
                         x.AddSagaStateMachine<OrderShipmentStateMachine, OrderShipmentState, OrderShipmentSagaDefinition>()
                             .MessageSessionRepository();
