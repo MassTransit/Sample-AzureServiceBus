@@ -61,6 +61,11 @@ namespace Sample.Api
                     cfg.Host(Configuration.GetConnectionString("AzureServiceBus"));
 
                     cfg.Send<OrderShipped>(s => s.UseSessionIdFormatter(c => c.Message.OrderId.ToString("D")));
+                    cfg.Send<OrderSubmitted>(s => 
+                        s.UseSessionIdFormatter(c =>
+                        {
+                            return c.Message.OrderId.ToString();
+                        }));
                 });
             });
         }
