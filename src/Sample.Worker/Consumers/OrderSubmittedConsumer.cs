@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+
 namespace Sample.Worker.Consumers
 {
     using System.Threading.Tasks;
@@ -9,6 +12,8 @@ namespace Sample.Worker.Consumers
     public class OrderSubmittedConsumer :
         IConsumer<OrderSubmitted>
     {
+        public static uint _index;
+
         readonly ILogger _logger;
 
         public OrderSubmittedConsumer(ILogger<OrderSubmittedConsumer> logger)
@@ -18,7 +23,11 @@ namespace Sample.Worker.Consumers
 
         public async Task Consume(ConsumeContext<OrderSubmitted> context)
         {
-            _logger.LogInformation("Order Submitted: {OrderId}", context.Message.OrderId);
+            var id= Interlocked.Increment(ref _index);
+
+            _logger.LogInformation("OrderSubmittedConsumer: Started Order Submitted: {OrderId}. DateTime: {now}. Correlation: {correlationId}. ID: {id}"
+                , context.Message.OrderId, DateTime.Now.ToString("o"), context.CorrelationId,id);
+            Thread.Sleep(1000);
         }
     }
 }

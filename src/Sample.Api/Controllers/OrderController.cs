@@ -25,7 +25,17 @@
         [HttpPut]
         public async Task<IActionResult> Put(OrderModel order)
         {
-            Response<OrderSubmissionAccepted> response = await _client.GetResponse<OrderSubmissionAccepted>(new SubmitOrder
+
+            for (int i = 0; i < 100; i++)
+            {
+                await _client.GetResponse<OrderSubmissionAccepted>(new SubmitOrder
+                {
+                    OrderId = order.OrderId,
+                    OrderNumber = order.OrderNumber,
+                    Timestamp = DateTimeOffset.Now
+                }).ConfigureAwait(false);
+            }
+            var response = await _client.GetResponse<OrderSubmissionAccepted>(new SubmitOrder
             {
                 OrderId = order.OrderId,
                 OrderNumber = order.OrderNumber,
