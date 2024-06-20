@@ -16,9 +16,10 @@ namespace Sample.Worker.Consumers
             _logger = logger;
         }
 
-        public async Task Consume(ConsumeContext<OrderSubmitted> context)
+        public Task Consume(ConsumeContext<OrderSubmitted> context)
         {
             _logger.LogInformation("Order Submitted: {OrderId}", context.Message.OrderId);
+            return Task.CompletedTask;
         }
     }
 }
