@@ -60,6 +60,7 @@ namespace Sample.Api
                 {
                     cfg.Host(Configuration.GetConnectionString("AzureServiceBus"));
 
+                    cfg.Publish<OrderShippedBase>(configurator => configurator.Exclude = true);
                     cfg.Send<OrderShipped>(s => s.UseSessionIdFormatter(c => c.Message.OrderId.ToString("D")));
                 });
             });
